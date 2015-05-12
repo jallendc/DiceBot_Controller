@@ -60,47 +60,45 @@ void loop() {
   if(inData[0] == char(70)){
     Dxl.goalSpeed(4, maxspeed | 0x400);
     Dxl.goalSpeed(3, maxspeed); 
+    delay(50);
   }
   //back
   if(inData[0] == char(66)){
     Dxl.goalSpeed(4, maxspeed);
     Dxl.goalSpeed(3, maxspeed | 0x400);
+    delay(50);
   }
   //left
   if(inData[0] == char(76)){
     Dxl.goalSpeed(3, maxspeed/2 | 0x400);
     Dxl.goalSpeed(4, maxspeed/2 | 0x400);
+    delay(50);
   }
   //right
   if(inData[0] == char(82)){
     Dxl.goalSpeed(3, maxspeed/2);
     Dxl.goalSpeed(4, maxspeed/2);
+    delay(50);
   }
   //up
   //if(inData[0] == char(85)){
   //  Dxl.goalSpeed(3, maxspeed/4 | 0x400);
   //}
   //down
-  //if(inData[0] == char(68)){
+  //if(inData[0] == char(68)){aa
   //  Dxl.goalSpeed(3, maxspeed/4);
   //}
   //close claw
   if(inData[0] == char(79)){
     clawangle = clawangle + clawStep;
-    if (clawangle > maxclaw){
-      clawangle = maxclaw; 
-    }
-    Dxl.goalPosition(2, clawangle);
     Dxl.goalPosition(1, clawangle);
+    Dxl.goalPosition(2, clawangle);
   }
   //open claw
   if(inData[0] == char(67)){
     clawangle = clawangle + clawStep;
-    if (clawangle < minclaw){
-      clawangle = minclaw; 
-    }
-    Dxl.goalPosition(1, clawangle);
-    Dxl.goalPosition(2, clawangle);
+    Dxl.goalPosition(1, clawangle | 0x400);
+    Dxl.goalPosition(2, clawangle | 0x400);
   }
   
   //trigger catapult
