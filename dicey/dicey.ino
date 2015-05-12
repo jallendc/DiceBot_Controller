@@ -17,6 +17,10 @@ char inChar;
 byte index = 0;
 int maxspeed = 400;
 double inspeed;
+int clawangle = 300;
+int clawStep = 15;
+int maxclaw = 1023;
+int minclaw = 300;
 
 
 void setup() {
@@ -24,8 +28,8 @@ void setup() {
   pinMode(BOARD_LED_PIN, OUTPUT);
   Serial3.begin(9600);
   Dxl.begin(3);
-  Dxl.wheelMode(1); //LeftClaw
-  Dxl.wheelMode(2); //RightClaw
+  Dxl.jointMode(1); //LeftClaw
+  Dxl.jointMode(2); //RightClaw
   Dxl.wheelMode(3); //LeftWheel
   Dxl.wheelMode(4); //RightWheel
   Dxl.jointMode(5); //Catapult
@@ -50,7 +54,7 @@ void loop() {
   
   //inspeed = (double)inData[1]/255.0;
   
-  SerialUSB.print(inData);
+  SerialUSB.println(inData);
   
   //forward
   if(inData[0] == char(70)){
@@ -82,14 +86,23 @@ void loop() {
   //}
   //close claw
   if(inData[0] == char(79)){
-    Dxl.goalSpeed(2, maxspeed/2 | 0x400);
-    Dxl.goalSpeed(1, maxspeed/2 | 0x400);
+    clawangle = clawangle + clawStep;
+    if (clawangle > maxclaw){
+      clawangle = maxclaw; 
+    }
+    Dxl.goalPosition(2, clawangle);
+    Dxl.goalPosition(1, clawangle);
   }
   //open claw
   if(inData[0] == char(67)){
-    Dxl.goalSpeed(1, maxspeed/2);
-    Dxl.goalSpeed(2, maxspeed/2);
+    clawangle = clawangle + clawStep;
+    if (clawangle < minclaw){
+      clawangle = minclaw; 
+    }
+    Dxl.goalPosition(1, clawangle);
+    Dxl.goalPosition(2, clawangle);
   }
+  
   //trigger catapult
   if(inData[0] == char(84)){
     Dxl.goalPosition(5, 900);
@@ -102,7 +115,7 @@ void loop() {
     Dxl.goalSpeed(2, 0);
     Dxl.goalSpeed(3, 0);
     Dxl.goalSpeed(4, 0);
-    Dxl.goalPosition(5, 490);
+    Dxl.goalSpeed(5, 0);
   }
   delay(10);
 }
